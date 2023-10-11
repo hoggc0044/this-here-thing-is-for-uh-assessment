@@ -4,19 +4,22 @@ import pandas
 
 # functions go here
 # recycled me num check from mmf mite
+
 def num_check(question):
-
     while True:
-
         try:
-            response = int(input(question))
-            return response
+            response = float(input(question))
+            if 1 <= response <= 9999:
+                return response
+            elif response < 1:
+                print("Yeah nah, you need to put a number in (NOT ZERO)")
+                continue
 
         except ValueError:
-            print("Yeah nah, you need to put a number in.")
+            print("Yeah, nah, that didn't work. Maybe check your response..?")
 
 
-# say hello mite to me new yes_no thingy
+# Yes / No checker
 def yes_no(question):
     to_check = ["yes", "no"]
     valid = False
@@ -27,8 +30,7 @@ def yes_no(question):
                 return response
             elif response == var_item[0]:
                 return var_item
-        print("INCORRECT RESPONSE: Please correct your response in order to proceed. "
-              "Missing argument: yes (y) / no (n). \n")
+        print("Yeah, uh, I don't see a yes or a no.. \n")
 
 
 # currency formatting
@@ -36,7 +38,7 @@ def currency(x):
     return f"${x:.2f}"
 
 
-# yeah, so uh this is my not_blank thing which uh makes sure there are no blank answers
+# All blank answers will be executed.
 def not_blank(question, error):
     valid = False
     while not valid:
@@ -48,23 +50,28 @@ def not_blank(question, error):
     return response
 
 
-# ah yeh g'day mate uh this is my uh unit checker. it works hard at making sure you
-# enter what should be entered.
+# Unit checker ensures that the correct units have been entered.
 def unit_checker(question):
     while True:
         response = input(question).lower()
 
         if response == "grams" or response == "g":
+            print("You have selected 'Grams'")
             return "grams"
         elif response == "kilograms" or response == "kg":
+            print("You have selected 'Kilograms'")
             return "kilograms"
-        elif response == "millilitres" or response == "mL":
+        elif response == "millilitres" or response == "ml":
+            print("You have selected 'Millilitres'")
             return "millilitres"
         elif response == "litres" or response == "L":
+            print("You have selected 'Litres'")
             return "litres"
-        elif response == "<blank>" or response == "BL":
-            return "<blank>"
-        elif response == "xxx":
+        elif response == "" or response == "blank":
+            print("You allegedly have an ingredient with no unit! Good job you!")
+            return ""
+        elif response == "END" or response == "end":
+            print("You have moved on.")
             return "Next Question"
         else:
             print("Yeah, uh, I think it only accepts the following:\n"
@@ -91,6 +98,7 @@ print("************** INTRODUCTION *****************\n\n\n"
 
 want_instructions = yes_no("Do you want to see the instructions? ")
 
+# Now ask if users want to read the instructions
 if want_instructions == "yes":
     print('''\n
     ****** Instructions ******
@@ -109,7 +117,7 @@ if want_instructions == "yes":
     **************************
     ''')
 
-# main routine
+# Setting up my dictionaries
 ingredient_name = []
 ingredient_price = []
 unit = []
@@ -117,18 +125,19 @@ required_amount = []
 current_amount = []
 creation_cost = []
 
-# get recipe name
+# Acquire the recipe name
 recipe_name = not_blank("What's the name of your recipe?", "Yeah nah, can't leave this blank.")
 print()
 
-# get serving size
+# Acquire the size of the serving
 serve = num_check("How many people are you serving?")
 print()
 
 print("Please enter your ingredients. You can type 'END' to move onto the next step.\n\n")
 
+# Get ingredients, unit, required amount, amount bought, and price per unit.
 while True:
-    # get ingredient
+    # get ingredients
     get_ingredient = not_blank("Your ingredient is: ", "Yeah nah, error 404 - ingredient not found")
     print()
 
@@ -138,10 +147,19 @@ while True:
         print("Yeah, nah, I think you need some more ingredients.")
         continue
 
-    unit_response = unit_checker("What's the unit for this ingredient? \n"
-                                 "Accepted: <blank>, kg, g, mL, L) \n")
+    if get_ingredient == "end" and len(ingredient_name) >= 3:
+        break
+    elif get_ingredient == "end" and len(ingredient_name) < 3:
+        print("Yeah, nah, I think you need some more ingredients.")
+        continue
+
+    # check unit response
+    unit_response = unit_checker("What's the unit for this ingredient? \n")
+
+    # append
     unit.append(unit_response)
 
+    # number check operations
     required = num_check("How much do you need? ")
     print()
     bought = num_check("How much did you buy?: ")
@@ -159,23 +177,23 @@ while True:
 
 # WE MUST GIVE THE GOODS PANDAS FROM CHINA
 recipe_dict = {
-    "Ingredients": ingredient_name,
-    "Ingredient Price": ingredient_price,
+    "Ingredient": ingredient_name,
+    "Price": ingredient_price,
     "Unit": unit,
-    "Required Amount": required_amount,
-    "Current Amount": current_amount,
-    "Creation Cost": creation_cost
+    "Required": required_amount,
+    "Current": current_amount,
+    "Cost": creation_cost
 }
 
 recipe_panda = pandas.DataFrame(recipe_dict)
 
 
-# cost of each serving and total cost
-total_cost = recipe_panda["Creation Cost"].sum()
+# Cost of each serving and total cost
+total_cost = recipe_panda["Cost"].sum()
 serving_cost = total_cost / serve
 
 print('''\n
-    **************************\n\n\n
+    **************************\n\n
 Thank you for using my calculator.\n
 This was made to allow people to include multiple recipes and ingredients. 
 

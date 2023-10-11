@@ -122,11 +122,11 @@ required_amount = []
 current_amount = []
 creation_cost = []
 
-# Aquire the recipe name
+# Acquire the recipe name
 recipe_name = not_blank("What's the name of your recipe?", "Yeah nah, can't leave this blank.")
 print()
 
-# Aquire the size of the serving
+# Acquire the size of the serving
 serve = num_check("How many people are you serving?")
 print()
 

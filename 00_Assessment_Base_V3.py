@@ -4,16 +4,21 @@ import pandas
 
 # functions go here
 # recycled me num check from mmf mite
+
 def num_check(question):
     while True:
         try:
             response = float(input(question))
-            if response == 0:
-                print("Yeah nah, the number cannot be zero.")
-            else:
+            if 0 <= response <= 9999:
                 return response
+            elif response < 0:
+                print("Yeah nah, you need to put a number in (NOT ZERO)")
+                continue
+            else:
+                print("Yeah uh that doesn't work.")
+                continue
         except ValueError:
-            print("Yeah nah, I think you need a whole or a decimal number.")
+            print("It's possible you are missing a decimal.")
 
 
 # Yes / No checker
@@ -122,11 +127,11 @@ required_amount = []
 current_amount = []
 creation_cost = []
 
-# Aquire the recipe name
+# Acquire the recipe name
 recipe_name = not_blank("What's the name of your recipe?", "Yeah nah, can't leave this blank.")
 print()
 
-# Aquire the size of the serving
+# Acquire the size of the serving
 serve = num_check("How many people are you serving?")
 print()
 
