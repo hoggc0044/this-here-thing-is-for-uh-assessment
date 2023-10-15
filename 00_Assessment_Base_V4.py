@@ -167,7 +167,7 @@ while True:
     price_per_unit = num_check("How much did you pay for it? $")
     print()
 
-    unit_cost = (price_per_unit / bought * required)
+    unit_cost = ((price_per_unit / bought) * required)
 
     ingredient_name.append(get_ingredient)
     ingredient_price.append(price_per_unit)
